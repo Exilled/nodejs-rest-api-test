@@ -31,31 +31,33 @@ var appRouter = function(app) {
 		var username = req.body.username;
 		var password = req.body.password;
 		
-		console.log("get Account");
-		console.log(username);
-		console.log(password);
+		//SEES IF USERNAME OR PASSWORD ARE EMPTY
+		if(username == null && password == null){
+				response.status = "error";
+				response.message = "missing username and/ or password";
+				response.data = null;
+				return res.send(response);
+		}
 		
+		//SEARCHS FOR GIVEN USERNAME/PASSWORD
 		for(var a = 0; a< accounts.length;a++){
-			
 			if(username == accounts[a].username && password == accounts[a].password){
 				
+				console.log("user"+ username+" logged in");
 				
 				response.status = "Ok";
 				response.message = null;
 				response.data = accounts[a];
 				return res.send(response);
-			}else if(username == "" && password == ""){
-				response.status = "error";
-				response.message = "missing username and/ or password";
-				return res.send(response);
-			}else{
-				response.status = "error";
-				response.message = "No username/password for that combination";
-				response.data = null;
-				return res.send(response);	
 			}
-			
 		}
+		
+		//IF NOT FOUND REPONDS WITH ERROR
+		response.status = "error";
+		response.message = "No username/password for that combination";
+		response.data = null;
+		return res.send(response);	
+		
 	});
 	
 	app.post("/accountCreate", function(req, res) {
@@ -66,11 +68,16 @@ var appRouter = function(app) {
 		if(!username && !password){
 			response.status = "error";
 			response.message = "Account Creation error: missing username and/ or password";
+			response.data = null;
 			return res.send(response);
 		}else{
+			
+			console.log("user"+ username +" created");
+			
 			accounts.push({username:username,password:password});
 			response.status = "Ok";
 			response.message = "Account Created";
+			response.data = null;
 			return res.send(response); 
 		}
 		
